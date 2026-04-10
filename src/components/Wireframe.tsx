@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import vcfShield from "../assets/EscudoValenciaCF.png";
+import valenciaPointsIcon from "../assets/ValenciaPoints.png";
 import {
   Home,
   Trophy,
@@ -100,7 +101,7 @@ export function Wireframe() {
 
       {/* Main Header */}
       <header className="bg-black border-b-2 border-vcf-orange sticky top-0 z-50 shadow-md">
-        <div className="max-w-[1400px] mx-auto px-4">
+        <div className="w-full  px-4">
           <div className="flex items-center justify-between py-4">
             {/* Logo */}
             <button
@@ -114,15 +115,10 @@ export function Wireframe() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div>
-                <div className="font-black text-2xl tracking-tight text-white">
-                  VALENCIA CF
-                </div>
-              </div>
             </button>
 
             {/* Main Navigation - Desktop */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-11">
               {[
                 { id: "home", label: "INICIO" },
                 { id: "team", label: "EQUIPO" },
@@ -149,6 +145,25 @@ export function Wireframe() {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3">
+              {/* Valencia Points */}
+              <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-vcf-orange/20 to-vcf-yellow/20 border-2 border-vcf-orange/50 rounded-lg hover:border-vcf-orange transition-all cursor-pointer">
+                <div className="w-8 h-8 flex-shrink-0">
+                  <img
+                    src={valenciaPointsIcon}
+                    alt="Valencia Points"
+                    className="w-full h-full object-contain drop-shadow-lg"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-vcf-yellow font-bold uppercase tracking-wide">
+                    Puntos
+                  </span>
+                  <span className="text-lg font-black text-white leading-none">
+                    2,340
+                  </span>
+                </div>
+              </div>
+              
               <button
                 onClick={toggleTheme}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"

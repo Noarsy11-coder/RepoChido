@@ -1,4 +1,6 @@
-import React from "react";
+import React, { use } from "react";
+import { getRanking, type Ranking } from "@/services/rankingService";
+import { useState, useEffect } from "react";
 import {
   Video,
   Clock,
@@ -13,6 +15,7 @@ import {
   Ticket,
   Image as ImageIcon,
 } from "lucide-react";
+
 import stadiumImage from "../../assets/EquipoVF.png";
 import valenciaVictoryImage from "../../assets/Noticia1.png";
 import newsImage1 from "../../assets/Noticia2.png";
@@ -31,11 +34,33 @@ import avatar4 from "../../assets/Avatar4.png";
 import avatar5 from "../../assets/Avatar5.png";
 import avatar6 from "../../assets/Avatar6.png";
 
+
+;
+
+
+
+
 interface PageProps {
   setCurrentPage: (page: string) => void;
 }
 
 export function HomePage({ setCurrentPage }: PageProps) {
+  const [ranking, setRanking] = useState<Ranking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchranking = async () => {
+      try {
+        const fetchedData = await getRanking();
+        setRanking(fetchedData);
+      } catch (error) {
+        console.error("Error cargando ranking:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchranking();
+  }, [])
   return (
     <div className="bg-content">
       {/* Hero Section - Reducido */}
@@ -479,146 +504,66 @@ export function HomePage({ setCurrentPage }: PageProps) {
             className="bg-card border-2 border-vcf-orange rounded-lg overflow-hidden cursor-pointer hover:border-vcf-yellow hover:shadow-2xl transition-all"
           >
             <div className="grid grid-cols-3 gap-4 p-6 bg-gradient-to-b from-vcf-yellow/20 to-transparent border-b-2 border-vcf-orange">
-              {[
-                {
-                  pos: 2,
-                  name: "Usuario2",
-                  pts: 3800,
-                  color: "bg-gray-300",
-                  avatar: avatar2,
-                },
-                {
-                  pos: 1,
-                  name: "Usuario1",
-                  pts: 4200,
-                  color: "bg-vcf-orange",
-                  avatar: avatar1,
-                },
-                {
-                  pos: 3,
-                  name: "Usuario3",
-                  pts: 3500,
-                  color: "bg-gray-400",
-                  avatar: avatar3,
-                },
-              ].map((user, i) => (
-                <div
-                  key={i}
-                  className={`text-center ${user.pos === 1 ? "transform scale-110 -mt-4" : ""}`}
-                >
+              {ranking.slice(0, 3).map((user, i) => {
+                const colors = ["bg-gray-300", "bg-vcf-orange", "bg-gray-400"];
+                const avatars = [avatar2, avatar1, avatar3];
+
+                return (
                   <div
-                    className={`w-20 h-20 mx-auto rounded-full mb-3 flex items-center justify-center shadow-lg ${user.color} text-white`}
+                    key={user.id}
+                    className={`text-center ${i === 0 ? "transform scale-110 -mt-4" : ""}`}
                   >
-                    <span className="text-2xl font-black">
-                      {user.pos}
-                    </span>
+                    <div
+                      className={`w-20 h-20 mx-auto rounded-full mb-3 flex items-center justify-center shadow-lg ${colors[i]} text-white`}
+                    >
+                      <span className="text-2xl font-black">{i + 1}</span>
+                    </div>
+
+                    <img
+                      src={avatars[i]}
+                      alt={user.fan_nombre}
+                      className="w-16 h-16 rounded-full mx-auto mb-2 shadow-md object-cover"
+                    />
+
+                    <div className="font-black mb-1 text-foreground">
+                      {user.fan_nombre}
+                    </div>
+
+                    <div className="text-sm text-vcf-orange font-bold">
+                      {user.puntos} pts
+                    </div>
                   </div>
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-16 h-16 rounded-full mx-auto mb-2 shadow-md object-cover"
-                  />
-                  <div className="font-black mb-1 text-foreground">
-                    {user.name}
-                  </div>
-                  <div className="text-sm text-vcf-orange font-bold">
-                    {user.pts} pts
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="divide-y divide-border">
-              {[
-                {
-                  pos: 4,
-                  name: "Usuario4",
-                  level: 15,
-                  pts: 3200,
-                  change: 2,
-                  avatar: avatar4,
-                },
-                {
-                  pos: 5,
-                  name: "Usuario5",
-                  level: 14,
-                  pts: 3100,
-                  change: 3,
-                  avatar: avatar5,
-                },
-                {
-                  pos: 6,
-                  name: "Usuario6",
-                  level: 13,
-                  pts: 3000,
-                  change: 4,
-                  avatar: avatar6,
-                },
-                {
-                  pos: 7,
-                  name: "Usuario7",
-                  level: 12,
-                  pts: 2900,
-                  change: 5,
-                  avatar: "",
-                },
-                {
-                  pos: 8,
-                  name: "Usuario8",
-                  level: 11,
-                  pts: 2800,
-                  change: 6,
-                  avatar: "",
-                },
-                {
-                  pos: 9,
-                  name: "Usuario9",
-                  level: 10,
-                  pts: 2700,
-                  change: 7,
-                  avatar: "",
-                },
-                {
-                  pos: 10,
-                  name: "Usuario10",
-                  level: 9,
-                  pts: 2600,
-                  change: 8,
-                  avatar: "",
-                },
-              ].map((user, i) => (
+
+              {ranking.slice(3, 10).map((user, i) => (
                 <div
-                  key={i}
+                  key={user.id}
                   className="flex items-center justify-between p-4 hover:bg-vcf-yellow/10 transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-vcf-orange/20 rounded-full flex items-center justify-center font-black text-vcf-orange">
-                      {user.pos}
+                      {i + 4}
                     </div>
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-10 h-10 rounded-full shadow-md object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 bg-gradient-to-br from-vcf-orange to-vcf-yellow rounded-full"></div>
-                    )}
+
+                    <div className="w-10 h-10 bg-gradient-to-br from-vcf-orange to-vcf-yellow rounded-full"></div>
+
                     <div>
                       <div className="font-black text-foreground">
-                        {user.name}
+                        {user.fan_nombre}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        Nivel {user.level}
+                        Nivel {user.nivel}
                       </div>
                     </div>
                   </div>
+
                   <div className="text-right">
                     <div className="font-black text-foreground">
-                      {user.pts} pts
-                    </div>
-                    <div className="text-xs text-vcf-blue font-bold">
-                      ↑ {user.change}
+                      {user.puntos} pts
                     </div>
                   </div>
                 </div>
